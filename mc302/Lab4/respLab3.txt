@@ -1,0 +1,23 @@
+1)
+Baralho: 
+Isabela (ID: null)
+Custo de Mana = 5
+Ataque = 10
+Vida Atual = 30
+Vida Máxima = 30
+Tiro (ID: null)
+Custo de Mana = 3
+ Dano = 3
+Thamiris (ID: null)
+Custo de Mana = 5
+Ataque = 15
+Vida Atual = 40
+Vida Máxima = 50
+Tiros grátis (ID: null)
+Custo de Mana = 6
+ Dano = 10
+2) Não, porque ja estamos usando classes que herdam de Carta e tem cada uma suas especificações. Sem isso seria um baralho com cartas iguais.
+3) Não, uma vez que trocou o tipo chamado no método
+4) Não, pois é um atributo privado. Deve ser acessado através de getters e setters.
+5) Sendo um método público, é possível chamá-lo
+6) Utilizando herança, não é necessário reescrever e misturar atributos e métodos
