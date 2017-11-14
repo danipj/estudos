@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 public class OnibusOvernight extends Onibus{
 	private boolean servicoDeBordo;
 	private boolean televisao;
@@ -20,5 +21,15 @@ public class OnibusOvernight extends Onibus{
 	public void setServicoDeBordo(boolean servicoDeBordo) {
 		this.servicoDeBordo = servicoDeBordo;
 	}
+=======
+import java.util.GregorianCalendar;
+
+public class OnibusOvernight extends Onibus{
+
+	public OnibusOvernight(String destino, GregorianCalendar partida) {
+		super(destino, partida);
+		this.totalLugares = 20;
+	}
+>>>>>>> 255c5b41d88d652e2336f88a6412b8eab764dda3
 
 }
