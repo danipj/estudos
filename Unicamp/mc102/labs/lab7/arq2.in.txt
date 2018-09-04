@@ -1,0 +1,2 @@
+M S 10 a e i o u A E I O U
+Q I 7 0 1 2 3 4 5 6
