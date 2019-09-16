@@ -1,0 +1,63 @@
+```{r}
+library(magrittr)
+library(rvest)
+page = read_html('http://www.comvest.unicamp.br/estatisticas/2018/quest/quest1.php')
+cursos = page %>%
+  html_node('select') %>%
+  html_nodes('option')   
+names = cursos %>% html_text()
+ids = cursos %>% html_attr('value') %>% as.numeric()
+cursoFrame = data.frame(ids,names)
+cursoFrame
+```
+
+```{r}
+library(RSQLite)
+sqlite    <- dbDriver("SQLite")
+exampledb <- dbConnect(sqlite,"167474.db")
+dbWriteTable(exampledb, 'cursos', cursoFrame)
+dbListTables(exampledb)
+dbGetQuery(exampledb, "SELECT * FROM cursos")
+```
+
+```{r}
+library(httr)
+res <- lapply(ids, function(x){
+  res <- POST(
+    url = "http://www.comvest.unicamp.br/estatisticas/2018/quest/quest2.php", 
+    body = list('opcao' = x, 'cid_inscricao'='all','questao'='sexo','grupo'='1'), 
+    encode = "form"
+  ) 
+  res <- read_html(content(res, as="raw")) 
+})
+vestFrames <-lapply(res, function(x){
+  tryCatch({
+   res <- x %>% html_node("form") %>% html_node("table") %>% html_node("td") %>% html_node("table") %>% html_table() %>% data.frame %>% t 
+  #res<-data.frame(res)
+  colnames(res) = c('em branco', 'masculino', 'feminino', 'total')
+  res<- res[2,]},
+  error=function(cond){
+    res <- data.frame(a=NA, b=NA,c=NA,d=NA)
+    #colnames(res) = c('em branco', 'masculino', 'feminino', 'total')
+  })
+})
+vestFrames
+```
+
+```{r}
+allFrames = do.call(rbind,vestFrames)
+colnames(allFrames) = c('em branco', 'masculino', 'feminino', 'total')
+complete = data.frame(ids,allFrames)
+complete[] <- lapply(complete, function(x) {
+    as.numeric(x)
+})
+sapply(complete,class)
+dbWriteTable(exampledb, 'generoVestibular', complete)
+dbListTables(exampledb)
+dbGetQuery(exampledb, "SELECT * FROM generoVestibular")
+```
+
+```{r}
+dbGetQuery(exampledb, "SELECT (masculino/total) as razao, masculino,total, names FROM generoVestibular join cursos on generoVestibular.ids = cursos.ids order by razao desc limit 15")
+```
+
